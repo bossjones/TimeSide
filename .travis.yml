@@ -16,7 +16,7 @@ before_install:
   - sudo conda init
   - sudo conda update conda --yes
   # install deps
-  - deps='setuptools numpy scipy matplotlib h5py pytables numpydoc sphinx'
+  - deps='setuptools numpy scipy matplotlib h5py pytables numpydoc sphinx coverage'
   - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
   - export PATH=$HOME/py/bin:$PATH
 
