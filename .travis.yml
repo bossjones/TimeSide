@@ -19,7 +19,7 @@ before_install:
   # Useful for debugging any issues with conda
   - conda info -a
   # install deps
-  - deps='setuptools numpy scipy matplotlib h5py pytables numpydoc sphinx coverage pytest'
+  - deps="setuptools numpy scipy matplotlib h5py pytables numpydoc sphinx coverage pytest"
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION $deps
   - source activate test-environment
   - python setup.py install
