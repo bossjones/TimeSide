@@ -21,6 +21,7 @@ before_install:
   # install deps
   - deps='setuptools numpy scipy matplotlib h5py pytables numpydoc sphinx'
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION $deps
+  - export PYTHONNOUSERSITE=1
   - source activate test-environment
 
 # command to install dependencies
