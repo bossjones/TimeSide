@@ -32,7 +32,7 @@ install:
 # command to run tests
 before_script:
   - python tests/get_samples.py
-  - conda install  --yes coverage
+  - conda install  --yes coverage pytest
   - pip install coveralls
 
 script:
