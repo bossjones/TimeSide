@@ -20,16 +20,16 @@
 # Authors:
 # Thomas Fillon <thomas@parisson.com>
 
-from __future__ import absolute_import
+#from __future__ import absolute_import
 
-from . import api
-from . import core
+from timeside import api
+from timeside import core
 
 
 __version__ = '0.5.7'
 
 # Check Availability of external Audio feature extraction librairies
-from .tools import package as ts_package
+from timeside.tools import package as ts_package
 _WITH_AUBIO = ts_package.check_aubio()
 _WITH_YAAFE = ts_package.check_yaafe()
 _WITH_VAMP = ts_package.check_vamp()
@@ -47,4 +47,4 @@ for _sub_pkg in _packages_with_processors:
 del ts_package
 del _packages_with_processors
 del _sub_pkg
-del absolute_import
+#del absolute_import
