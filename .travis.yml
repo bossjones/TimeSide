@@ -13,17 +13,30 @@ before_install:
  - sudo apt-get install -qq libhdf5-serial-dev python-h5py 
  - sudo apt-get install -qq python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-gnonlin gstreamer0.10-plugins-ugly gstreamer0.10-plugins-bad
 
+  # Install conda
+  - http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+
+  # install deps
+  - deps='numpy scipy h5py pytables numpydoc sphinx coveralls'
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION $deps
+  - source activate test-environment
+
 # command to install dependencies
 install: 
 # - "pip install -r requirements.txt --use-mirrors"
-- sudo pip install numexpr
 - python setup.py install
 
 
 # command to run tests
 before_script:
 - python tests/get_samples.py
-- pip install coveralls
 
 script:
  - coverage run --source=timeside --omit=timeside/analyzer/aubio/aubio_*.py,timeside/analyzer/yaafe.py,timeside/analyzer/limsi_sad.py,timeside/analyzer/vamp_plugin.py setup.py test
