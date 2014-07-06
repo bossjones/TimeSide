@@ -20,7 +20,7 @@ before_install:
   # Useful for debugging any issues with conda
   - conda info -a
   # install deps
-  - deps='numpy scipy h5py pytables numpydoc sphinx coveralls'
+  - deps='numpy scipy h5py pytables numpydoc sphinx python-coveralls'
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION $deps
   - source activate test-environment
 
