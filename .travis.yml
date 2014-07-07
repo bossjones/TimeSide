@@ -25,7 +25,12 @@ before_install:
   - ln -s  /usr/lib/python2.7/dist-packages/gst-0.10 /home/travis/py/lib/python2.7/site-packages/gst-0.10
   - ln -s  /usr/lib/python2.7/dist-packages/pygst.pth /home/travis/py/lib/python2.7/site-packages/pygst.pth
   - ln -s  /usr/lib/python2.7/dist-packages/pygst.py /home/travis/py/lib/python2.7/site-packages/pygst.py
-  - export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
+  - ln -s  /usr/lib/python2.7/dist-packages/pygst.pyc /home/travis/py/lib/python2.7/site-packages/pygst.pyc
+  - ln -s  /usr/lib/python2.7/dist-packages/pygtk.pth /home/travis/py/lib/python2.7/site-packages/pygtk.pth
+  - ln -s  /usr/lib/python2.7/dist-packages/pygtk.py /home/travis/py/lib/python2.7/site-packages/pygtk.py
+  - ln -s  /usr/lib/python2.7/dist-packages/pygtk.pyc /home/travis/py/lib/python2.7/site-packages/pygtk.pyc
+
+  #- export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
   - # ln -s /usr/lib/x86_64-linux-gnu/libm.so /home/travis/py/lib/libm.so
   - ls -l /home/travis/py/lib/
   - ls -l /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/
