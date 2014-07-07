@@ -20,7 +20,7 @@ before_install:
   - sudo conda init
   - sudo conda update conda --yes
   # deps="setuptools numpy scipy matplotlib h5py pytables numpydoc sphinx coverage pip gobject"  
-  - deps="pytables"
+  - deps="setuptools pytables"
   - conda create -p $HOME/py --yes -c 'system' $deps "python=$TRAVIS_PYTHON_VERSION"
   - export PATH=$HOME/py/bin:$PATH
   - ls -l /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/
