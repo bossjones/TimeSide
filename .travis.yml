@@ -20,25 +20,12 @@ before_install:
   - sudo conda update conda --yes
   - deps="setuptools numpy scipy matplotlib h5py pytables numpydoc sphinx coverage pip"  
   - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
-  - export PATH=$HOME/py/bin:$PATH
-  # Link Python Gstreamer 
-  - ln -s  /usr/lib/python2.7/dist-packages/gobject /home/travis/py/lib/python2.7/site-packages/gobject
-  - ln -s  /usr/lib/python2.7/dist-packages/glib /home/travis/py/lib/python2.7/site-packages/glib
-  - ln -s  /usr/lib/python2.7/dist-packages/gst-0.10 /home/travis/py/lib/python2.7/site-packages/gst-0.10
-  - ln -s  /usr/lib/python2.7/dist-packages/pygst.pth /home/travis/py/lib/python2.7/site-packages/pygst.pth
-  - ln -s  /usr/lib/python2.7/dist-packages/pygst.py /home/travis/py/lib/python2.7/site-packages/pygst.py
-  - ln -s  /usr/lib/python2.7/dist-packages/pygst.pyc /home/travis/py/lib/python2.7/site-packages/pygst.pyc
-  - ln -s  /usr/lib/python2.7/dist-packages/pygtk.pth /home/travis/py/lib/python2.7/site-packages/pygtk.pth
-  - ln -s  /usr/lib/python2.7/dist-packages/pygtk.py /home/travis/py/lib/python2.7/site-packages/pygtk.py
-  - ln -s  /usr/lib/python2.7/dist-packages/pygtk.pyc /home/travis/py/lib/python2.7/site-packages/pygtk.pyc
-  - export RPATH=/usr/lib/x86_64-linux-gnu/:$RPATH
-  - # ln -s /usr/lib/x86_64-linux-gnu/libm.so /home/travis/py/lib/libm.so
+  - export PYTHON_PATH=$HOME/py/lib:$PYTHON_PATH
+
   - ls -l /home/travis/py/lib/
   - ls -l /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/
   - ls -l /usr/lib/python2.7/dist-packages/
   - ls -l /home/travis/py/lib/python2.7/site-packages
-  - conda info -a
-  - conda info -s
   - python -c "import sys; print sys.path"
   # Install TimeSide
   - python setup.py install
