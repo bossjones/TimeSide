@@ -27,6 +27,7 @@ before_install:
   - ls -l /usr/lib/python2.7/dist-packages/
   - conda info -a
   - conda info -s
+  - python -c "import sys; print sys.path"
   # Install TimeSide
   - python setup.py install
 
