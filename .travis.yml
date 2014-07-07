@@ -12,15 +12,15 @@ before_install:
   - sudo apt-get install -qq python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-gnonlin gstreamer0.10-plugins-ugly gstreamer0.10-plugins-bad
   # Instal Python packages
   - sudo apt-get install python-setuptools
-  - sudo apt-get install -qq python-numpy python-scipy python-matplotlib
-  - sudo apt-get install -qq libhdf5-serial-dev python-h5py
+  # sudo apt-get install -qq python-numpy python-scipy python-matplotlib
+  # sudo apt-get install -qq libhdf5-serial-dev python-h5py
 
   # Install conda
   - sudo pip install conda
   # install deps
   - sudo conda init
   - sudo conda update conda --yes
-  - deps="pytables"  
+  - deps="numpy scipy matplotlib h5py pytables"  
   - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
   - export PYTHONPATH=$HOME/py/lib/python2.7/site-packages:$PYTHONPATH
 
