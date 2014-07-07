@@ -20,7 +20,7 @@ before_install:
   # install deps
   - sudo conda init
   - sudo conda update conda --yes
-  - deps="numpy scipy=0.10.1 matplotlib h5py pytables"  
+  - deps="numpy scipy=0.11.0 matplotlib h5py pytables"  
   - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
   - export PYTHONPATH=$HOME/py/lib/python2.7/site-packages:$PYTHONPATH
 
