@@ -25,6 +25,7 @@ before_install:
   - export PATH=$HOME/py/bin:$PATH
   - ls -l /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/
   - ls -l /usr/lib/python2.7/dist-packages/
+  - ls -l /home/travis/py/lib/python2.7/site-packages
   - conda info -a
   - conda info -s
   - python -c "import sys; print sys.path"
