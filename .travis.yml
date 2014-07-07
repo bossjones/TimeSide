@@ -26,6 +26,7 @@ before_install:
   - ln -s  /usr/lib/python2.7/dist-packages/pygst.pth /home/travis/py/lib/python2.7/site-packages/pygst.pth
   - ln -s  /usr/lib/python2.7/dist-packages/pygst.py /home/travis/py/lib/python2.7/site-packages/pygst.py
 
+  - ls -l /usr/lib/x86_64-linux-gnu/libm*
   - ls -l /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/
   - ls -l /usr/lib/python2.7/dist-packages/
   - ls -l /home/travis/py/lib/python2.7/site-packages
