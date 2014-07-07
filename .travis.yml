@@ -10,10 +10,7 @@ before_install:
   - sudo add-apt-repository -y ppa:donk/gstreamer
   - sudo apt-get -qq update
   - sudo apt-get install -qq python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-gnonlin gstreamer0.10-plugins-ugly gstreamer0.10-plugins-bad
-  - sudo apt-get install -qq python-setuptools
-  - sudo apt-get install -qq python-numpy python-scipy python-matplotlib
-  - sudo apt-get install -qq libhdf5-serial-dev python-h5py
- 
+
   # Install conda
   - sudo pip install conda
   # install deps
@@ -26,6 +23,8 @@ before_install:
   - ln -s  /usr/lib/python2.7/dist-packages/gobject /home/travis/py/lib/python2.7/site-packages/gobject
   - ln -s  /usr/lib/python2.7/dist-packages/glib /home/travis/py/lib/python2.7/site-packages/glib
   - ln -s  /usr/lib/python2.7/dist-packages/gst-0.10 /home/travis/py/lib/python2.7/site-packages/gst-0.10
+  - ln -s  /usr/lib/python2.7/dist-packages/pygst.pth /home/travis/py/lib/python2.7/site-packages/pygst.pth
+  - ln -s  /usr/lib/python2.7/dist-packages/pygst.py /home/travis/py/lib/python2.7/site-packages/pygst.py
 
   - ls -l /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/
   - ls -l /usr/lib/python2.7/dist-packages/
