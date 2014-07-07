@@ -27,6 +27,8 @@ before_install:
   - ls -l /usr/lib/python2.7/dist-packages/
   - ls -l /home/travis/py/lib/python2.7/site-packages
   - python -c "import sys; print sys.path"
+
+install:
   # Install TimeSide
   - python setup.py install
 
