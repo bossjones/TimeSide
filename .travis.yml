@@ -23,6 +23,7 @@ before_install:
   - deps="pytables"
   - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
   - export PATH=$HOME/py/bin:$PATH
+  - ls -l /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/
   # Install TimeSide
   - python setup.py install
 
