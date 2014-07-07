@@ -24,6 +24,9 @@ before_install:
   - export PATH=$HOME/py/bin:$PATH
   # Link Python Gstreamer 
   - ln -s  /usr/lib/python2.7/dist-packages/gobject /home/travis/py/lib/python2.7/site-packages/gobject
+  - ln -s  /usr/lib/python2.7/dist-packages/glib /home/travis/py/lib/python2.7/site-packages/glib
+  - ln -s  /usr/lib/python2.7/dist-packages/gst-0.10 /home/travis/py/lib/python2.7/site-packages/gst-0.10
+
   - ls -l /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/
   - ls -l /usr/lib/python2.7/dist-packages/
   - ls -l /home/travis/py/lib/python2.7/site-packages
