@@ -29,7 +29,6 @@ before_script:
 
 script:
   - echo $PYTHONPATH 
-  - locate pygobject
   - coverage run --source=timeside --omit=timeside/analyzer/aubio/aubio_*.py,timeside/analyzer/yaafe.py,timeside/analyzer/limsi_sad.py,timeside/analyzer/vamp_plugin.py tests/run_all_tests
 
 after_success:
