@@ -19,7 +19,7 @@ before_install:
   # install deps
   - sudo conda init
   - sudo conda update conda --yes
-  - deps="setuptools numpy scipy matplotlib h5py pytables numpydoc sphinx coverage pip gobject"  
+  - deps="setuptools numpy scipy matplotlib h5py pytables numpydoc sphinx coverage pip"  
   - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
   - export PATH=$HOME/py/bin:$PATH
   # Link Python Gstreamer 
