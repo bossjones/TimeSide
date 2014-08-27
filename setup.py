@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
-from setuptools.command.install import install
+from setuptools.command.install import install as _install
 
 
 def _post_install():
@@ -32,9 +32,9 @@ def _post_install():
                 os.symlink(src, dest)
 
 
-class ts_install(install):
+class install(_install):
     def run(self):
-        install.run(self)
+        _install.run(self)
 
         self.execute(_post_install, [],
                      msg="Running post install task")
@@ -89,5 +89,5 @@ setup(
     include_package_data=True,
     zip_safe=False,
     scripts=['scripts/timeside-waveforms', 'scripts/timeside-launch'],
-    cmdclass={'install': ts_install},  # override install
+    cmdclass={'install': install},  # override install
 )
