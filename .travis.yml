@@ -25,7 +25,7 @@ before_install:
   - conda info -a
 
   # Install binary dependencies with conda
-  - deps="numpy scipy=0.11.0 matplotlib h5py pytables"  
+  - deps="setuptools numpy scipy=0.11.0 matplotlib h5py pytables"  
   #- conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
   # Do not use conda but use conda site-package to get the installed package
   #- export PYTHONPATH=$HOME/py/lib/python2.7/site-packages:$PYTHONPATH
