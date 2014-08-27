@@ -13,7 +13,7 @@ class ts_install(install):
     def run(self):
         install.run(self)
 
-        self.execute(_post_install,
+        self.execute(_post_install, [],
                      msg="Running post install task")
 
 
