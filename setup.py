@@ -14,7 +14,8 @@ def _post_install():
     dest_dir = get_python_lib()
 
     packages = ['gobject', 'glib', 'pygst', 'pygst.pyc', 'pygst.pth',
-                'gst-0.10']
+                'gst-0.10', 'pygtk.pth', 'pygtk.py', 'pygtk.pyc']
+
 
     python_version = sys.version[:3]
     global_path = os.path.join('/usr/lib', 'python' + python_version)
