@@ -14,6 +14,8 @@ def _post_install():
     import setuptools
     print setuptools.__version__
 
+    print os.environ
+
     dest_dir = get_python_lib()
 
     packages = ['gobject', 'glib', 'pygst', 'pygst.pyc', 'pygst.pth',
