@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
-from setuptools.command.install import install as _install
+from setuptools.command.bdist_egg import bdist_egg as _bdist_egg
 
 
 def _post_install():
@@ -11,11 +11,13 @@ def _post_install():
     import sys
     from distutils.sysconfig import get_python_lib
 
+    import setuptools
+    print setuptools.__version__
+
     dest_dir = get_python_lib()
 
     packages = ['gobject', 'glib', 'pygst', 'pygst.pyc', 'pygst.pth',
                 'gst-0.10', 'pygtk.pth', 'pygtk.py', 'pygtk.pyc']
-
 
     python_version = sys.version[:3]
     global_path = os.path.join('/usr/lib', 'python' + python_version)
@@ -32,10 +34,9 @@ def _post_install():
                 os.symlink(src, dest)
 
 
-class install(_install):
+class bdist_egg(_bdist_egg):
     def run(self):
-        _install.run(self)
-
+        _bdist_egg.run(self)
         self.execute(_post_install, [],
                      msg="Running post install task")
 
@@ -89,5 +90,5 @@ setup(
     include_package_data=True,
     zip_safe=False,
     scripts=['scripts/timeside-waveforms', 'scripts/timeside-launch'],
-    cmdclass={'install': install},  # override install
+    cmdclass={'bdist_egg': bdist_egg},  # override bdist_egg
 )
