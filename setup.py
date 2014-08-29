@@ -14,7 +14,8 @@ def _post_install():
     import setuptools
     print setuptools.__version__
 
-    print os.environ
+    #print os.environ['LD_LIBRARY_PATH']
+    #os.environ['LD_LIBRARY_PATH'].insert(0, x)
 
     dest_dir = get_python_lib()
 
