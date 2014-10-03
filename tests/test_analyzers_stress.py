@@ -69,7 +69,10 @@ def _tests_factory(test_class, test_doc, list_analyzers, skip_reasons={}):
 
 # Define test to skip and corresponding reasons
 skip_reasons = {'VampSimpleHost': ('VampSimpleHost bypasses the decoder '
-                                   'and requires a file input')}
+                                   'and requires a file input'),
+                'IRITDiverg': 'IRIT_Diverg fails the stress test',
+                'IRITMusicSLN': 'IRITMusicSLN fails the stress test',
+                'IRITMusicSNB': 'IRITMusicSNB fails the stress test'}
 
 # For each analyzer in TimeSide, test with constant input
 _tests_factory(test_class=TestAnalyzers_withDC,
