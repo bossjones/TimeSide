@@ -63,7 +63,7 @@ class NumpySrc:
             print element
             print length
             print array.shape
-            buf = gst.Buffer(numpy.getbuffer(array))
+            buf = gst.Buffer(numpy.getbuffer(array.flatten()))
 
             buf.timestamp = self.pos * self.per_sample
             buf.duration = int(length*self.per_sample)
