@@ -62,6 +62,7 @@ class NumpySrc:
             array = self.array[self.pos:self.pos+length]
             print element
             print length
+            print array.shape
             buf = gst.Buffer(numpy.getbuffer(array))
 
             buf.timestamp = self.pos * self.per_sample
