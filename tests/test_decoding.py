@@ -120,9 +120,11 @@ class TestDecoding(unittest.TestCase):
 
         self.assertEqual(decoder.mime_type(), self.expected_mime_type)
 
-        #expected_totalframes = [self.expected_totalframes, self.expected_totalframes +32]  # +32 to handle some issue with ogg
+        expected_totalframes = [self.expected_totalframes,
+                                self.expected_totalframes + 32]
+                                # +32 to handle some issue with ogg
 
-        self.assertEqual(totalframes, self.expected_totalframes)
+        self.assertIn(totalframes, expected_totalframes)
 
         input_duration = decoder.input_totalframes / decoder.input_samplerate
         output_duration = decoder.totalframes() / decoder.output_samplerate
