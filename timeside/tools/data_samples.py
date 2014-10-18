@@ -60,6 +60,8 @@ class NumpySrc:
             if avalaible_sample < length:
                 length = avalaible_sample
             array = self.array[self.pos:self.pos+length]
+            print element
+            print length
             buf = gst.Buffer(numpy.getbuffer(array))
 
             buf.timestamp = self.pos * self.per_sample
