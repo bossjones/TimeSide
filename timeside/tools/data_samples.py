@@ -52,7 +52,7 @@ class NumpySrc:
         self.appsrc.connect("enough-data", self.enough_data)
 
     def need_data(self, element, length):
-        #length = length // 64
+        length = length // 64
         if self.pos >= self.array.shape[0]:
             element.emit("end-of-stream")
         else:
