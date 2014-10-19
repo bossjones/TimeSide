@@ -146,13 +146,9 @@ class TestDecodingSegment(TestDecoding):
         self.duration = 3
         self.source_duration = self.duration
 
-        self.expected_totalframes = self.duration * self.expected_samplerate
-
     def testMp3(self):
         "Test mp3 decoding"
         super(TestDecodingSegment, self).testMp3()
-        self.expected_totalframes = self.duration * \
-            self.expected_samplerate + 1
 
     def testWav(self):
         "Test wav decoding"

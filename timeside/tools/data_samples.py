@@ -235,7 +235,6 @@ def generate_sample_file(filename, samples_dir, gst_audio_encoder,
                                           output_file=sample_file,
                                           gst_audio_encoder=gst_audio_encoder)
             gst_builder.run()
-            print sample_file
     return sample_file
 
 
