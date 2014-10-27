@@ -43,8 +43,7 @@ before_script:
 
 
 script:
-  #- coverage run --source=timeside --omit=timeside/analyzer/aubio/aubio_*.py,timeside/analyzer/yaafe.py,timeside/analyzer/limsi_sad.py,timeside/analyzer/vamp_plugin.py tests/run_all_tests
   - python -c "from timeside.tools.test_samples import samples; print '\n'.join(samples.__str__().split(','))"
-
+  - coverage run --source=timeside --omit=timeside/analyzer/aubio/aubio_*.py,timeside/analyzer/yaafe.py,timeside/analyzer/limsi_sad.py,timeside/analyzer/vamp_plugin.py tests/run_all_tests
 after_success:
   - coveralls
