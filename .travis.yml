@@ -29,7 +29,7 @@ before_install:
   # Do not use conda but use conda site-package to get the installed package
   #- export PYTHONPATH=$HOME/py/lib/python2.7/site-packages:$PYTHONPATH
   - conda create -q -n test-environment $deps python=$TRAVIS_PYTHON_VERSION 
-  - rm ~/anaconda/envs/testenv/lib/libm.so.6 # use the system libm; see github.com/ContinuumIO/anaconda-issues/issues/182
+  - rm ~/anaconda/envs/test-environment/lib/libm.so.6 # use the system libm; see github.com/ContinuumIO/anaconda-issues/issues/182
   - source activate test-environment
 
 install:
