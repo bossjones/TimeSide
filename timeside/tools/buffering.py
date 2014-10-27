@@ -22,14 +22,14 @@
 
 import tables
 from tempfile import NamedTemporaryFile
-
+import numpy as np
 
 class BufferTable(object):
     def __init__(self, array_names=None):
         self._tempfile = NamedTemporaryFile(mode='w', suffix='.h5',
                                             prefix='ts_buf_',
                                             delete=True)
-        self.fileh = tables.open_file(self._tempfile.name, mode='w')
+        self.fileh = tables.openFile(self._tempfile.name, mode='w')
 
         if not array_names:
             array_names = []
@@ -49,16 +49,31 @@ class BufferTable(object):
 
     def append(self, name, new_array):
         try:
-            self.fileh.root.__getattr__(name).append([new_array])
+            if new_array.shape:
+                self.fileh.root.__getattr__(name).append(new_array[np.newaxis,
+                                                                   :])
+            else:
+                self.fileh.root.__getattr__(name).append([new_array])
         except tables.exceptions.NoSuchNodeError:
             if name not in self.array_names:
                 self.array_names.append(name)
-            self.fileh.create_earray(where=self.fileh.root,
-                                     name=name,
-                                     obj=[new_array])
+             # The following is compatible with pytables 3 only
+             #self.fileh.create_earray(where=self.fileh.root,
+             #                         name=name,
+             #                         obj=[new_array])
+            atom = tables.Atom.from_dtype(new_array.dtype)
+            dim_list = [0]
+            dim_list.extend([dim for dim in new_array.shape])
+            shape = tuple(dim_list)
+
+            self.fileh.createEArray(where=self.fileh.root,
+                                    name=name,
+                                    atom=atom,
+                                    shape=shape)
+            self.append(name, new_array)
 
     def close(self):
         for name in self.array_names:
-            self.fileh.remove_node(self.fileh.root, name)
+            self.fileh.removeNode(self.fileh.root, name)
         self.fileh.close()
         self._tempfile.close()

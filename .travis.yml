@@ -6,6 +6,7 @@ python:
 
 # command to prepare the system to install prerequisites or dependencies
 before_install:
+
   # Install Gstreamer
   - sudo add-apt-repository -y ppa:donk/gstreamer
   - sudo apt-get -qq update
@@ -14,20 +15,17 @@ before_install:
   #- sudo apt-get install python-setuptools
 
   # Install conda
-  - pip install conda
-  - conda init
-  #- wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  #- bash miniconda.sh -b -p $HOME/miniconda
-  #- export PATH="$HOME/miniconda/bin:$PATH"
-  #- hash -r
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   # Useful for debugging any issues with conda
   - conda info -a
-
+  
   # Install binary dependencies with conda
   - deps="setuptools coverage numpy scipy=0.11.0 matplotlib h5py pytables"  
-  #- conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
   # Do not use conda but use conda site-package to get the installed package
   #- export PYTHONPATH=$HOME/py/lib/python2.7/site-packages:$PYTHONPATH
   - conda create -q -n test-environment $deps python=$TRAVIS_PYTHON_VERSION 
@@ -39,8 +37,9 @@ install:
 
 # command to run tests
 before_script:
-  - python tests/get_samples.py
+  - pip install -U coverage
   - pip install coveralls
+
 
 script:
   - coverage run --source=timeside --omit=timeside/analyzer/aubio/aubio_*.py,timeside/analyzer/yaafe.py,timeside/analyzer/limsi_sad.py,timeside/analyzer/vamp_plugin.py tests/run_all_tests

@@ -39,6 +39,17 @@ Goals
 * **Index**, **tag** and **annotate** audio archives with semantic metadata (see `Telemeta <http://telemeta.org>`__ which embed TimeSide).
 
 
+Support
+=======
+
+To fund the project and continue our development process, we need your explicit support. So if you use TimeSide in production or even in development, please let us know:
+
+ * star or fork the project on `GitHub <https://github.com/yomguy/TimeSide>`_
+ * tweet something to `@parisson_studio <https://twitter.com/parisson_studio>`_ or `@yomguy <https://twitter.com/yomguy>`_
+ * drop us an email <support@parisson.com>
+
+Thanks for your support!
+
 Architecture
 ============
 
@@ -47,64 +58,36 @@ The streaming architecture of TimeSide relies on 2 main parts: a processing engi
 .. image:: http://vcs.parisson.com/gitweb/?p=timeside.git;a=blob_plain;f=doc/slides/img/timeside_schema.svg;hb=refs/heads/dev
   :width: 800 px
 
+Dive in
+========
 
-Processors
-==========
+To list all available plugins::
 
-IDecoder
----------
+ import timeside
+ timeside.core.list_processors()
 
-  * FileDecoder [gst_dec]
-  * ArrayDecoder [array_dec]
-  * LiveDecoder [gst_live_dec]
+Define some processors::
 
-IAnalyzer
----------
+ from timeside.core import get_processor
+ decoder  =  get_processor('file_decoder')('sweep.wav')
+ grapher  =  get_processor('waveform_simple')
+ analyzer =  get_processor('level')
+ encoder  =  get_processor('vorbis_encoder')('sweep.ogg')
 
-  *  AubioTemporal [aubio_temporal]
-  *  AubioPitch [aubio_pitch]
-  *  AubioMfcc [aubio_mfcc]
-  *  AubioMelEnergy [aubio_melenergy]
-  *  AubioSpecdesc [aubio_specdesc]
-  *  Yaafe [yaafe]
-  *  Spectrogram [spectrogram_analyzer]
-  *  Waveform [waveform_analyzer]
-  *  VampSimpleHost [vamp_simple_host]
-  *  IRITSpeechEntropy [irit_speech_entropy]
-  *  IRITSpeech4Hz [irit_speech_4hz]
-  *  OnsetDetectionFunction [odf]
-  *  LimsiSad [limsi_sad]
+Then run the *magic* pipeline::
 
-IValueAnalyzer
----------------
+ (decoder | grapher | analyzer | encoder).run()
 
-  * Level [level]
-  * MeanDCShift [mean_dc_shift]
+Render the grapher results::
 
-IGrapher
----------
+ grapher.render(output='waveform.png')
 
-  *  Waveform [waveform_simple]
-  *  WaveformCentroid [waveform_centroid]
-  *  WaveformTransparent [waveform_transparent]
-  *  WaveformContourBlack [waveform_contour_black]
-  *  WaveformContourWhite [waveform_contour_white]
-  *  SpectrogramLog [spectrogram_log]
-  *  SpectrogramLinear [spectrogram_lin]
-  *  Display.aubio_pitch.pitch [grapher_aubio_pitch]
-  *  Display.odf [grapher_odf]
-  *  Display.waveform_analyzer [grapher_waveform]
-  *  Display.irit_speech_4hz.segments [grapher_irit_speech_4hz_segments]
+Show the analyzer results::
 
-IEncoder
----------
+ print 'Level:', analyzer.results
 
-  * VorbisEncoder [gst_vorbis_enc]
-  * WavEncoder [gst_wav_enc]
-  * Mp3Encoder [gst_mp3_enc]
-  * FlacEncoder [gst_flac_enc]
-  * AacEncoder [gst_aac_enc]
-  * WebMEncoder [gst_webm_enc]
-  * OpusEncoder [gst_opus_enc]
-  * AudioSink [gst_audio_sink_enc]
+The encoded OGG file should also be there...
+
+For more extensive examples, please see the `full documentation <http://files.parisson.com/timeside/doc/>`_.
+
 

@@ -3,7 +3,16 @@
 
 from setuptools import setup
 from setuptools.command.bdist_egg import bdist_egg as _bdist_egg
+from setuptools.command.test import test as TestCommand
 
+import sys
+
+# Pytest
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = ['tests', '--ignore', 'tests/sandbox', '--verbose']
+        self.test_suite = True
 
 def _post_install():
 
@@ -43,7 +52,6 @@ class bdist_egg(_bdist_egg):
         self.execute(_post_install, [],
                      msg="Running post install task")
 
-
 CLASSIFIERS = [
     'Intended Audience :: Science/Research',
     'Intended Audience :: Developers',
@@ -62,19 +70,18 @@ CLASSIFIERS = [
 KEYWORDS = 'audio analysis features extraction MIR transcoding graph visualize plot HTML5 interactive metadata player'
 
 setup(
-    name = "TimeSide",
+    name='TimeSide',
     url='https://github.com/yomguy/TimeSide/',
     description="open web audio processing framework",
     long_description=open('README.rst').read(),
     author="Guillaume Pellerin, Paul Brossier, Thomas Fillon, Riccardo Zaccarelli, Olivier Guilyardi",
     author_email="yomguy@parisson.com, piem@piem.org, thomas@parisson.com, riccardo.zaccarelli@gmail.com, olivier@samalyse.com",
-    version='0.5.7',
+    version='0.6',
     install_requires=[
         'numpy',
         'mutagen',
         'pillow',
         'h5py',
-        'numexpr>=2.0.0',
         'tables',
         'pyyaml',
         'simplejson',
@@ -84,6 +91,8 @@ setup(
         'django-extensions',
         'djangorestframework',
         'south',
+        'traits',
+        'networkx',
         ],
     platforms=['OS Independent'],
     license='Gnu Public License V2',
@@ -93,5 +102,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
     scripts=['scripts/timeside-waveforms', 'scripts/timeside-launch'],
-    cmdclass={'bdist_egg': bdist_egg},  # override bdist_egg
-)
+    cmdclass={'bdist_egg': bdist_egg,  # override bdist_egg
+              'test': PyTest},
+    tests_require=['pytest'],
+    )
+

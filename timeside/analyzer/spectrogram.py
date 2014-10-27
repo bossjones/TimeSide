@@ -23,26 +23,79 @@ from timeside.core import implements, interfacedoc
 from timeside.analyzer.core import Analyzer
 from timeside.api import IAnalyzer
 from timeside.analyzer.preprocessors import downmix_to_mono, frames_adapter
+from timeside.tools.buffering import BufferTable
+from ..tools.parameters import Int, HasTraits
+
 import numpy as np
 
 
 class Spectrogram(Analyzer):
-    """Spectrogram analyzer"""
+
+    """
+    Spectrogram image builder with an extensible buffer based on tables
+
+    Parameters
+    ----------
+    input_blocksize : int, optional
+        Blocksize of the input signal, default to 2048
+    input_stepsize : str, optional
+        The second parameter, default to half blocksize.
+    fft_size : int, optional
+        The size of the fft, default to blocksize.
+
+    Examples
+    --------
+    >>> import timeside
+    >>> from timeside.core import get_processor
+    >>> from timeside.tools.test_samples import samples
+    >>> audio_source = samples['sweep.wav']
+    >>> decoder = get_processor('file_decoder')(uri=audio_source)
+    >>> spectrogram = get_processor('spectrogram_analyzer')(input_blocksize=2048, input_stepsize=1024)
+    >>> pipe = (decoder | spectrogram)
+    >>> pipe.run()
+    >>> spectrogram.results.keys()
+    ['spectrogram_analyzer']
+    >>> result = spectrogram.results['spectrogram_analyzer']
+    >>> result.data.shape
+    (344, 1025)
+
+     .. plot::
+
+      import timeside
+      from timeside.core import get_processor
+      from timeside.tools.test_samples import samples
+      audio_source = samples['sweep.wav']
+      decoder = get_processor('file_decoder')(uri=audio_source)
+      spectrogram = get_processor('spectrogram_analyzer')(input_blocksize=2048,
+                                                          input_stepsize=1024)
+      pipe = (decoder | spectrogram)
+      pipe.run()
+      res = spectrogram.results['spectrogram_analyzer']
+      res.render()
+    """
+
     implements(IAnalyzer)
 
-    def __init__(self, blocksize=2048, stepsize=None, fft_size=None):
+    # Define Parameters
+    class _Param(HasTraits):
+        fft_size = Int()
+        input_blocksize = Int()
+        input_stepsize = Int()
+
+    def __init__(self, input_blocksize=2048, input_stepsize=None,
+                 fft_size=None):
         super(Spectrogram, self).__init__()
 
-        self.input_blocksize = blocksize
-        if stepsize:
-            self.input_stepsize = stepsize
+        self.input_blocksize = input_blocksize
+        if input_stepsize:
+            self.input_stepsize = input_stepsize
         else:
-            self.input_stepsize = blocksize // 2
+            self.input_stepsize = input_blocksize // 2
 
         if not fft_size:
-            self.FFT_SIZE = blocksize
+            self.fft_size = input_blocksize
         else:
-            self.FFT_SIZE = fft_size
+            self.fft_size = fft_size
 
         self.values = []
 
@@ -70,15 +123,21 @@ class Spectrogram(Analyzer):
     @downmix_to_mono
     @frames_adapter
     def process(self, frames, eod=False):
-            self.values.append(np.abs(np.fft.rfft(frames, self.FFT_SIZE)))
-            return frames, eod
+        self.values.append(np.abs(np.fft.rfft(frames, self.fft_size)))
+        return frames, eod
 
     def post_process(self):
         spectrogram = self.new_result(data_mode='value', time_mode='framewise')
-        spectrogram.parameters = {'FFT_SIZE': self.FFT_SIZE}
+        spectrogram.parameters = {'fft_size': self.fft_size}
+        # spectrogram.data_object.value = self.values['spectrogram']
         spectrogram.data_object.value = self.values
         nb_freq = spectrogram.data_object.value.shape[1]
         spectrogram.data_object.y_value = (np.arange(0, nb_freq) *
-                                           self.samplerate() / self.FFT_SIZE)
+                                           self.samplerate() / self.fft_size)
+        self.add_result(spectrogram)
 
-        self.process_pipe.results.add(spectrogram)
+
+if __name__ == "__main__":
+    import doctest
+    import timeside
+    doctest.testmod(timeside.analyzer.spectrogram, verbose=True)

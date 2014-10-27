@@ -26,7 +26,8 @@ from timeside.api import IEncoder
 
 class AacEncoder(GstEncoder):
 
-    """ gstreamer-based AAC encoder """
+    """AAC encoder based on Gstreamer"""
+
     implements(IEncoder)
 
     def __init__(self, output, streaming=False, overwrite=False):
@@ -62,12 +63,7 @@ class AacEncoder(GstEncoder):
     @staticmethod
     @interfacedoc
     def id():
-        return "gst_aac_enc"
-
-    @staticmethod
-    @interfacedoc
-    def description():
-        return "AAC GStreamer based encoder"
+        return "aac_encoder"
 
     @staticmethod
     @interfacedoc

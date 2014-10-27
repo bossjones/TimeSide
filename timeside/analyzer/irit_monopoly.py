@@ -25,7 +25,7 @@ from timeside.analyzer.core import Analyzer
 from timeside.api import IAnalyzer
 import numpy
 from timeside.analyzer.preprocessors import frames_adapter
-from timeside.analyzer.aubio.aubio_pitch import AubioPitch
+from timeside.analyzer.externals.aubio_pitch import AubioPitch
 
 
 class IRITMonopoly(Analyzer):
@@ -47,7 +47,7 @@ class IRITMonopoly(Analyzer):
 
         self._aubio_pitch_analyzer = AubioPitch(blocksize_s=self.wLen,
                                                 stepsize_s=self.wStep)
-        self.parents.append(self._aubio_pitch_analyzer)
+        self.parents['aubio_pitch'] = self._aubio_pitch_analyzer
 
     @interfacedoc
     def setup(self, channels=None, samplerate=None,
@@ -87,7 +87,10 @@ class IRITMonopoly(Analyzer):
 
         '''
         aubio_res_id = 'aubio_pitch.pitch_confidence'
-        pitch_confidences = self.process_pipe.results[aubio_res_id].data
+        aubio_uuid = self.parents['aubio_pitch'].uuid()
+        aubio_results = self.process_pipe.results[aubio_uuid]
+
+        pitch_confidences = aubio_results[aubio_res_id].data
 
         nb_frameDecision = int(self.decisionLen / self.wStep)
         epsilon = numpy.spacing(pitch_confidences[0])
@@ -109,7 +112,7 @@ class IRITMonopoly(Analyzer):
         conf.id_metadata.name += ' ' + 'Yin Confidence'
         conf.data_object.value = pitch_confidences
 
-        self.process_pipe.results.add(conf)
+        self.add_result(conf)
 
         convert = {False: 0, True: 1}
         label = {0: 'Poly', 1: 'Mono'}
@@ -125,7 +128,7 @@ class IRITMonopoly(Analyzer):
 
         segs.data_object.duration = [(float(s[1] - s[0]+1) * self.decisionLen)
                                      for s in segList]
-        self.process_pipe.results.add(segs)
+        self.add_result(segs)
         return
 
     def monoLikelihood(self, m, v):

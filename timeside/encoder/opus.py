@@ -32,7 +32,8 @@ from timeside.api import IEncoder
 
 class OpusEncoder(GstEncoder):
 
-    """ gstreamer-based Opus encoder """
+    """Opus encoder based on Gstreamer"""
+
     implements(IEncoder)
 
     @interfacedoc
@@ -63,12 +64,7 @@ class OpusEncoder(GstEncoder):
     @staticmethod
     @interfacedoc
     def id():
-        return "gst_opus_enc"
-
-    @staticmethod
-    @interfacedoc
-    def description():
-        return "Opus GStreamer based encoder"
+        return "opus_encoder"
 
     @staticmethod
     @interfacedoc

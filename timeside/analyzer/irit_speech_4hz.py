@@ -24,9 +24,12 @@ from timeside.analyzer.core import Analyzer
 from timeside.analyzer.utils import melFilterBank, computeModulation
 from timeside.analyzer.utils import segmentFromValues
 from timeside.api import IAnalyzer
-from numpy import array, hamming, dot, mean, float, mod
+import numpy as np
 from numpy.fft import rfft
 from scipy.signal import firwin, lfilter
+from timeside.analyzer.preprocessors import frames_adapter
+
+from timeside.tools.parameters import Float, HasTraits
 
 
 class IRITSpeech4Hz(Analyzer):
@@ -47,6 +50,10 @@ class IRITSpeech4Hz(Analyzer):
     '''
 
     implements(IAnalyzer)
+
+    # Define Parameters
+    class _Param(HasTraits):
+        medfilt_duration = Float()
 
     @interfacedoc
     def __init__(self, medfilt_duration=5):
@@ -76,6 +83,11 @@ class IRITSpeech4Hz(Analyzer):
         self.nbFilters = 30
         self.melFilter = melFilterBank(self.nbFilters, self.nFFT, samplerate)
 
+        self.wLen = 0.016
+        self.wStep = 0.008
+        self.input_blocksize = int(self.wLen * samplerate)
+        self.input_stepsize = int(self.wStep * samplerate)
+
     @staticmethod
     @interfacedoc
     def id():
@@ -94,6 +106,7 @@ class IRITSpeech4Hz(Analyzer):
     def __str__(self):
         return "Speech confidences indexes"
 
+    @frames_adapter
     def process(self, frames, eod=False):
         '''
 
@@ -101,11 +114,11 @@ class IRITSpeech4Hz(Analyzer):
 
         frames = frames.T[0]
         # windowing of the frame (could be a changeable property)
-        w = frames * hamming(len(frames))
+        w = frames * np.hamming(len(frames))
 
         # Mel scale spectrum extraction
         f = abs(rfft(w, n=2 * self.nFFT)[0:self.nFFT])
-        e = dot(f ** 2, self.melFilter)
+        e = np.dot(f ** 2, self.melFilter)
 
         self.energy4hz.append(e)
 
@@ -122,13 +135,13 @@ class IRITSpeech4Hz(Analyzer):
         num = firwin(self.orderFilter, Wn, pass_zero=False)
 
         # Energy on the frequency range
-        self.energy4hz = array(self.energy4hz)
+        self.energy4hz = np.array(self.energy4hz)
         energy = lfilter(num, 1, self.energy4hz.T, 0)
         energy = sum(energy)
 
         # Normalization
         if self.normalizeEnergy and energy.any():
-            energy = energy / mean(energy)
+            energy = energy / np.mean(energy)
 
         # Energy Modulation
         frameLenModulation = int(
@@ -136,7 +149,7 @@ class IRITSpeech4Hz(Analyzer):
         modEnergyValue = computeModulation(energy, frameLenModulation, True)
 
         # Confidence Index
-        conf = array(modEnergyValue - self.threshold) / self.threshold
+        conf = np.array(modEnergyValue - self.threshold) / self.threshold
         conf[conf > 1] = 1
 
         modEnergy = self.new_result(data_mode='value', time_mode='framewise')
@@ -145,7 +158,7 @@ class IRITSpeech4Hz(Analyzer):
 
         modEnergy.data_object.value = conf
 
-        self.process_pipe.results.add(modEnergy)
+        self.add_result(modEnergy)
 
         # Segment
         convert = {False: 0, True: 1}
@@ -154,11 +167,11 @@ class IRITSpeech4Hz(Analyzer):
         decision = modEnergyValue > self.threshold
 
         segList = segmentFromValues(decision)
-        # Hint : Median filtering could imrove smoothness of the result
+        # Hint : Median filtering could improve smoothness of the result
         from scipy.signal import medfilt
-        output_samplerate = float(self.samplerate()) / self.input_stepsize
-        N = self.medfilt_duration * output_samplerate
-        N += 1 - mod(N, 2)  # Make N odd
+        output_samplerate = np.float(self.samplerate()) / self.input_stepsize
+        N = int(np.ceil(self.medfilt_duration * output_samplerate))
+        N += 1 - np.mod(N, 2)  # Make N odd
         segList_filt = segmentFromValues(medfilt(decision, N))
 
         segs = self.new_result(data_mode='label', time_mode='segment')
@@ -168,14 +181,14 @@ class IRITSpeech4Hz(Analyzer):
         segs.data_object.label_metadata.label = label
 
         segs.data_object.label = [convert[s[2]] for s in segList]
-        segs.data_object.time = [(float(s[0]) * self.blocksize() /
+        segs.data_object.time = [(np.float(s[0]) * self.blocksize() /
                                  self.samplerate())
                                  for s in segList]
-        segs.data_object.duration = [(float(s[1] - s[0] + 1) * self.blocksize() /
+        segs.data_object.duration = [(np.float(s[1] - s[0] + 1) * self.blocksize() /
                                      self.samplerate())
                                      for s in segList]
 
-        self.process_pipe.results.add(segs)
+        self.add_result(segs)
 
         # Median filter on decision
         segs = self.new_result(data_mode='label', time_mode='segment')
@@ -185,14 +198,14 @@ class IRITSpeech4Hz(Analyzer):
         segs.data_object.label_metadata.label = label
 
         segs.data_object.label = [convert[s[2]] for s in segList_filt]
-        segs.data_object.time = [(float(s[0]) * self.blocksize() /
+        segs.data_object.time = [(np.float(s[0]) * self.blocksize() /
                                  self.samplerate())
                                  for s in segList_filt]
-        segs.data_object.duration = [(float(s[1] - s[0] + 1) * self.blocksize() /
+        segs.data_object.duration = [(np.float(s[1] - s[0] + 1) * self.blocksize() /
                                      self.samplerate())
                                      for s in segList_filt]
 
-        self.process_pipe.results.add(segs)
+        self.add_result(segs)
 
 
 

@@ -29,7 +29,7 @@ from ..exceptions import PIDError
 class DisplayAnalyzer(Grapher):
 
     """
-    Builds a PIL image from analyzer result
+    image from analyzer result
     This is an Abstract base class
     """
     dpi = 72  # Web default value for Telemeta
@@ -53,13 +53,15 @@ class DisplayAnalyzer(Grapher):
 
     @interfacedoc
     def post_process(self):
-
-        parent_result = self.process_pipe.results[self._result_id]
+        pipe_result = self.process_pipe.results
+        parent_uuid = self.parents['analyzer'].uuid()
+        parent_result = pipe_result[parent_uuid][self._result_id]
 
         fg_image = parent_result._render_PIL((self.image_width,
                                               self.image_height), self.dpi)
         if self._background:
-            bg_result = self.process_pipe.results[self._bg_id]
+            bg_uuid = self.parents['bg_analyzer'].uuid()
+            bg_result = pipe_result[bg_uuid][self._bg_id]
             bg_image = bg_result._render_PIL((self.image_width,
                                               self.image_height), self.dpi)
             # convert image to grayscale
@@ -93,18 +95,20 @@ class DisplayAnalyzer(Grapher):
                     self._background = True
                     bg_analyzer = get_processor('waveform_analyzer')()
                     self._bg_id = bg_analyzer.id()
-                    self.parents.append(bg_analyzer)
+                    self.parents['bg_analyzer'] = bg_analyzer
                 elif background == 'spectrogram':
                     self._background = True
                     bg_analyzer = get_processor('spectrogram_analyzer')()
                     self._bg_id = bg_analyzer.id()
-                    self.parents.append(bg_analyzer)
+                    self.parents['bg_analyzer'] = bg_analyzer
 
                 else:
                     self._background = None
 
-                self.parents.append(analyzer(**analyzer_parameters))
+                parent_analyzer = analyzer(**analyzer_parameters)
+                self.parents['analyzer'] = parent_analyzer
                 # TODO : make it generic when analyzer will be "atomize"
+                self._parent_uuid =  parent_analyzer.uuid()
                 self._result_id = result_id
 
             @staticmethod
@@ -117,7 +121,7 @@ class DisplayAnalyzer(Grapher):
             def name():
                 return grapher_name
 
-            __doc__ = """Builds a PIL image representing """ + grapher_name
+            __doc__ = """Image representing """ + grapher_name
 
         NewGrapher.__name__ = 'Display' + '.' + result_id
 
@@ -140,11 +144,11 @@ except PIDError:
     pass
 
 # Onset Detection Function
-odf = get_processor('odf')
+odf = get_processor('onset_detection_function')
 DisplayOnsetDetectionFunction = DisplayAnalyzer.create(
     analyzer=odf,
-    result_id='odf',
-    grapher_id='grapher_odf',
+    result_id='onset_detection_function',
+    grapher_id='grapher_onset_detection_function',
     grapher_name='Onset detection function')
 
 # Waveform

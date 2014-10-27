@@ -25,8 +25,8 @@
 from timeside import api
 from timeside import core
 
+__version__ = '0.6'
 
-__version__ = '0.5.7'
 
 # Check Availability of external Audio feature extraction librairies
 from timeside.tools import package as ts_package
@@ -35,7 +35,7 @@ _WITH_YAAFE = ts_package.check_yaafe()
 _WITH_VAMP = ts_package.check_vamp()
 
 
-_packages_with_processors = ['decoder', 'analyzer', 'encoder', 'grapher']
+_packages_with_processors = ['decoder', 'analyzer', 'encoder', 'grapher', 'fx']
 
 __all__ = ['api', 'core']
 __all__.extend(_packages_with_processors)

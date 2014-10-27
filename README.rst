@@ -39,6 +39,17 @@ Goals
 * **Index**, **tag** and **annotate** audio archives with semantic metadata (see `Telemeta <http://telemeta.org>`__ which embed TimeSide).
 
 
+Support
+=======
+
+To fund the project and continue our development process, we need your explicit support. So if you use TimeSide in production or even in development, please let us know:
+
+ * star or fork the project on `GitHub <https://github.com/yomguy/TimeSide>`_
+ * tweet something to `@parisson_studio <https://twitter.com/parisson_studio>`_ or `@yomguy <https://twitter.com/yomguy>`_
+ * drop us an email <support@parisson.com>
+
+Thanks for your support!
+
 Architecture
 ============
 
@@ -48,192 +59,136 @@ The streaming architecture of TimeSide relies on 2 main parts: a processing engi
   :width: 800 px
 
 
-Processors
-==========
-
-IDecoder
----------
-
-  * FileDecoder [gst_dec]
-  * ArrayDecoder [array_dec]
-  * LiveDecoder [gst_live_dec]
-
-IAnalyzer
----------
-
-  *  AubioTemporal [aubio_temporal]
-  *  AubioPitch [aubio_pitch]
-  *  AubioMfcc [aubio_mfcc]
-  *  AubioMelEnergy [aubio_melenergy]
-  *  AubioSpecdesc [aubio_specdesc]
-  *  Yaafe [yaafe]
-  *  Spectrogram [spectrogram_analyzer]
-  *  Waveform [waveform_analyzer]
-  *  VampSimpleHost [vamp_simple_host]
-  *  IRITSpeechEntropy [irit_speech_entropy]
-  *  IRITSpeech4Hz [irit_speech_4hz]
-  *  OnsetDetectionFunction [odf]
-  *  LimsiSad [limsi_sad]
-
-IValueAnalyzer
----------------
-
-  * Level [level]
-  * MeanDCShift [mean_dc_shift]
-
-IGrapher
----------
-
-  *  Waveform [waveform_simple]
-  *  WaveformCentroid [waveform_centroid]
-  *  WaveformTransparent [waveform_transparent]
-  *  WaveformContourBlack [waveform_contour_black]
-  *  WaveformContourWhite [waveform_contour_white]
-  *  SpectrogramLog [spectrogram_log]
-  *  SpectrogramLinear [spectrogram_lin]
-  *  Display.aubio_pitch.pitch [grapher_aubio_pitch]
-  *  Display.odf [grapher_odf]
-  *  Display.waveform_analyzer [grapher_waveform]
-  *  Display.irit_speech_4hz.segments [grapher_irit_speech_4hz_segments]
-
-IEncoder
----------
-
-  * VorbisEncoder [gst_vorbis_enc]
-  * WavEncoder [gst_wav_enc]
-  * Mp3Encoder [gst_mp3_enc]
-  * FlacEncoder [gst_flac_enc]
-  * AacEncoder [gst_aac_enc]
-  * WebMEncoder [gst_webm_enc]
-  * OpusEncoder [gst_opus_enc]
-  * AudioSink [gst_audio_sink_enc]
-
-News
-=====
-
-0.5.6
-
-  * Bugfix release
-  * Fix analyzer instanciation as parent for some graphers
-
-0.5.5
-
- * All processor folders (decoder, analyzer, grapher, encoder) are now real plugin repositories : you can just drop processors in it and play!
- * TimeSide can be installed without Aubio, Yaafe nor Vamp : it should be easier to install on old distributions for which those librairies are difficult or impossible to compile
- * Encoder : add an Opus encoder
- * Experimental : add a django web server with a REST API (see "Web server")
- * AubioPitch: prevent NaN in result by converting them to zero
- * Yaafe analyzer: simplify adaptation of process frames from TimeSide to Yaafe
- * LimsiSad: add a default value for parameter sad_model
- * Fix various NaN and Inf and PEP8 issues also many PyFlake warnings
- * Full `Travis integration <https://travis-ci.org/yomguy/TimeSide/>`_ with tests and test coverage through `coveralls.io <https://coveralls.io/r/yomguy/TimeSide>`_
- * Thanks to all contributors!
- * WARNING: some of the processor paths used in your app could have moved between 0.5.4 and 0.5.5. Check them with timeside.core.processors(). Note that it is now advised to use the timeside.core.get_processor() method to instantiate the processors with their respective id as argument.
- * UPGRADING from the sources: please remove all .pyc files from your repository.
-
-0.5.4
-
- * Encoder : transcoded streams where broken. Now fixed with some smart thread controls.
- * Analyzer : update VAMP plugin example in sandbox
- * Analyzer : new *experimental* plugin : Limsi Speech Activity Detection Systems (limsi_sad)
- * Decoder : process any media in streaming mode giving its URL
- * Install : fix some setup requirements
-
-0.5.3
-
- * Make Analyzer rendering more generic and easy to implement
- * Analyzer : implement rendering capability for event and segment + add some more analyzer graphers
- * Analyzer : refactoring the results rendering method. + Capability to use matplotlib in environnement with no display
- * Decoder : Add a Live decoder to get data from the soundcard
- * Decoder : add support for 96kHz sampling rate
- * Encoder: live AudioSink encoder, encoder that plays the audio stream through the soundcard
- * Grapher : add a generic Class to display Analyzers through their 'render' method. Add the new grapher file
- * Grapher : add a generic Class to display Analyzers through their 'render' method. For now, it only support FrameValueResult analyzer
- * Core : add a condition to catch signal only if a LiveDecoder source is used
- * Various bugfixes
-
-0.5.2
-
- * Add a general launch script "timeside-launch" (see "Shell interface")
- * Add some decorators to filter the inputs of processes (see analyzer.waveform for ex)
- * Add a "stack" option to the FileDecoder to accumulate audio data allowing multipass processes
- * Add beat confidence to aubio_temporal
- * Add AAC encoder (gstreamer voaacenc plugin needed)
- * Add UUIDs to the file URI and to all processors
- * Add a Debian repository with all dependencies for i386 and amd64 architectures
- * Fix buggy WebM encoder
- * Fix buggy MP3 muxing
- * Fix various minor bugs
-
-0.5.1
-
- * Add *parent* processor list to Processor
- * Simplify and optimize the grapher system
- * Add Grapher abstract generic class
- * Add a UUID property to Processor
- * Add a SpectrogramLinear grapher
- * Add WaveformTransparent grapher
- * Fix some assignment issues regarding immutable type in for Analyzer Result
- * Simplify analyzer results implementation by introducing a Factory and multiple classes and subclasses to handle the 8 different kinds of results
- * Add doctests and improve the unit tests
- * Add a OnsetDetectionFunction analyzer
- * Update documentation
- * Various cleanups
- * Various bugfixes
-
-0.5.0
-
- * Deep refactoring of the analyzer API to handle various new usecases, specifically audio feature extraction
- * Add serializable global result container (NEW dependency to h5py, json, yaml)
- * Add new audio feature extraction analyzers thanks to the Aubio library providing beat & BPM detection, pitch dectection and other cool stuff (NEW dependency on aubio)
- * Add new audio feature extraction analyzers thanks to the Yaafe library (NEW dependency on yaafe)
- * Add new IRIT speech detection analyzers (NEW dependency on scipy)
- * EXPERIMENTAL : add new audio feature extraction thanks to the VAMP plugin library (NEW dependency on some vamp toold)
- * Add new documentation : http://files.parisson.com/timeside/doc/
- * New Debian repository for instant install
- * Various bugfixes
- * Comptatible with Python >=2.7
- * WARNING : no longer compatible with Telemeta 1.4.5
-
-
 Dive in
 ========
 
 To list all available plugins::
 
- >>> import timeside
- >>> timeside.core.list_processors()
+ import timeside
+ timeside.core.list_processors()
 
 Define some processors::
 
- >>> from timeside.core import get_processor
- >>> decoder  =  get_processor('gst_dec')('sweep.wav')
- >>> grapher  =  get_processor('waveform_simple')
- >>> analyzer =  get_processor('level')
- >>> encoder  =  get_processor('gst_vorbis_enc')('sweep.ogg')
+ from timeside.core import get_processor
+ decoder  =  get_processor('file_decoder')('sweep.wav')
+ grapher  =  get_processor('waveform_simple')
+ analyzer =  get_processor('level')
+ encoder  =  get_processor('vorbis_encoder')('sweep.ogg')
 
 Then run the *magic* pipeline::
 
- >>> (decoder | grapher | analyzer | encoder).run()
+ (decoder | grapher | analyzer | encoder).run()
 
 Render the grapher results::
 
- >>> grapher.render(output='waveform.png')
+ grapher.render(output='waveform.png')
 
 Show the analyzer results::
 
- >>> print 'Level:', analyzer.results
+ print 'Level:', analyzer.results
 
 The encoded OGG file should also be there...
 
-Note you can also instanciate each processor with its own class::
-
- >>> decoder  =  timeside.decoder.file.FileDecoder('sweep.wav')
- >>> grapher  =  timeside.grapher.waveform_simple.Waveform()
- >>> analyzer =  timeside.analyzer.level.Level()
- >>> encoder  =  timeside.encoder.ogg.VorbisEncoder('sweep.ogg')
-
 For more extensive examples, please see the `full documentation <http://files.parisson.com/timeside/doc/>`_.
+
+
+News
+=====
+
+0.6
+
+  * WARNING! some processor ids have changed. Please see the full list below.
+  * NEW analyzers: IRIT Monopoly (see Processors)
+  * NEW graphers: IRIT Start/Session segmentation
+  * Add extensible buffering thanks to pytables (NEW dependency)
+  * Add typed parameters in processors and server thanks to traits (NEW dependency)
+  * Add a graph model to the pipe thanks to networkx (NEW dependency)
+  * Add test sample generators based on GStreamer
+  * Add a background image option for rendering analyzers
+  * Add on-the-fly filtering decorators
+  * Add a Docker development image and a Dockerfile
+  * Add a Vagrant development box
+  * Update the Debian package installation procedure
+  * Results are now stored in pipe.results as as dictionnary of AnalyzerResults
+  * Update various processors
+  * Prevent duplication of processor in the pipe (i.e. processors sharing the same class and parameters). This also fix #60.
+  * Update of Travis CI scripts https://travis-ci.org/yomguy/TimeSide/
+
+0.5.6
+
+  * Bugfix release
+  * Fix analyzer instanciation as parent for some graphers
+  * Store analyzer's results in pipe.results by uuid instead of id (fix #24)
+
+For older news, please visit: https://github.com/yomguy/TimeSide/blob/master/NEWS.rst
+
+Processors
+==========
+
+IEncoder
+--------
+
+   * **live_encoder** : Gstreamer-based Audio Sink
+   * **flac_encoder** : FLAC encoder based on Gstreamer
+   * **aac_encoder** : AAC encoder based on Gstreamer
+   * **mp3_encoder** : MP3 encoder based on Gstreamer
+   * **vorbis_encoder** : OGG Vorbis encoder based on Gstreamer
+   * **opus_encoder** : Opus encoder based on Gstreamer
+   * **wav_encoder** : WAV encoder based on Gstreamer
+   * **webm_encoder** : WebM encoder based on Gstreamer
+
+IDecoder
+--------
+
+   * **array_decoder** : Decoder taking Numpy array as input
+   * **file_decoder** : File Decoder based on Gstreamer
+   * **live_decoder** : Live source Decoder based on Gstreamer
+
+IGrapher
+--------
+
+   * **grapher_aubio_pitch** : Image representing Aubio Pitch
+   * **grapher_onset_detection_function** : Image representing Onset detection function
+   * **grapher_waveform** : Image representing Waveform from Analyzer
+   * **grapher_irit_speech_4hz_segments** : Image representing Irit 4Hz Speech Segmentation
+   * **grapher_irit_speech_4hz_segments_median** : Image representing Irit 4Hz Speech Segmentation with median filter
+   * **grapher_monopoly_segments** : Image representing Irit Monopoly Segmentation
+   * **grapher_limsi_sad_etape** : Image representing LIMSI SAD with ETAPE model
+   * **grapher_limsi_sad_maya** : Image representing LIMSI SAD with Mayan model
+   * **grapher_irit_startseg** : Image representing IRIT Start Noise
+   * **spectrogram_log** : Logarithmic scaled spectrogram (level vs. frequency vs. time).
+   * **spectrogram_lin** : Linear scaled spectrogram (level vs. frequency vs. time).
+   * **waveform_simple** : Simple monochrome waveform image.
+   * **waveform_centroid** : Waveform where peaks are colored relatively to the spectral centroids of each frame buffer.
+   * **waveform_contour_black** : Black amplitude contour waveform.
+   * **waveform_contour_white** : an white amplitude contour wavform.
+   * **waveform_transparent** : Transparent waveform.
+
+IAnalyzer
+---------
+
+   * **mean_dc_shift** : Mean DC shift analyzer
+   * **level** : Audio level analyzer
+   * **aubio_melenergy** : Aubio Mel Energy analyzer
+   * **aubio_mfcc** : Aubio MFCC analyzer
+   * **aubio_pitch** : Aubio Pitch estimation analyzer
+   * **aubio_specdesc** : Aubio Spectral Descriptors collection analyzer
+   * **aubio_temporal** : Aubio Temporal analyzer
+   * **yaafe** : Yaafe feature extraction library interface analyzer
+   * **irit_monopoly** : Segmentor Monophony/Polyphony based on the analysis of yin confidence.
+   * **irit_startseg** : Segmentation of recording sessions into 'start' and 'session' segments
+   * **irit_speech_4hz** : Speech Segmentor based on the 4Hz energy modulation analysis.
+   * **irit_speech_entropy** : Speech Segmentor based on Entropy analysis.
+   * **limsi_sad** : Limsi Speech Activity Detection Systems
+   * **spectrogram_analyzer** : Spectrogram image builder with an extensible buffer based on tables
+   * **onset_detection_function** : Onset Detection Function analyzer
+   * **spectrogram_analyzer_buffer** : Spectrogram image builder with an extensible buffer based on tables
+   * **waveform_analyzer** : Waveform analyzer
+
+IEffect
+-------
+
+   * **fx_gain** : Gain effect processor
 
 API / Documentation
 ====================
@@ -242,74 +197,67 @@ API / Documentation
 * Tutorial : http://files.parisson.com/timeside/doc/tutorial/index.html
 * API : http://files.parisson.com/timeside/doc/api/index.html
 * Player / UI : https://github.com/yomguy/TimeSide/wiki/Ui-Guide (see also "Web player")
-* Examples:
-
-  - http://nbviewer.ipython.org/github/thomasfillon/AES53-timeside-demos/tree/master/
-  - https://github.com/yomguy/TimeSide/blob/master/tests/sandbox/example_CMMR.py
-  - https://github.com/yomguy/TimeSide/blob/master/tests/sandbox/exempleCMMR_vamp.py
+* Notebooks : http://nbviewer.ipython.org/github/thomasfillon/Timeside-demos/tree/master/
+* Usage : http://archives.crem-cnrs.fr/archives/items/CNRSMH_E_2004_017_001_01/
 
 Install
 =======
 
-The TimeSide engine is intended to work on all Linux and Unix like platforms.
-
-It depends on several other python modules and compiled librairies like GStreamer.
+The TimeSide engine is intended to work on all Linux and Unix like platforms. It depends on several other python modules and compiled libraries like GStreamer.
 
 Debian, Ubuntu
 ---------------
 
-For Debian based distributions, we provide a safe repository which provides all additional dependencies that are not included in Debian yet::
-
- $ echo "deb http://ftp.debian.org/debian/ wheezy-backports main" | sudo tee -a /etc/apt/sources.list
- $ echo "deb http://debian.parisson.com/debian/ wheezy-backports main" | sudo tee -a /etc/apt/sources.list
-
- $ sudo apt-get update
- $ sudo apt-get install -t wheezy-backports python-timeside
-
-This method is known to be compatible with Debian 7 Wheezy with backports and Ubuntu 14.04 LTS. It will install additional binary packages from several audio feature extraction librairies like Aubio and Yaafe for which TimeSide has some nice processors.
-
-Note you can also use pip if you already have already satisfied all the binary dependencies::
-
- $ sudo pip install timeside
+For Debian based distributions, we provide a safe repository giving additional dependencies that are not included in Debian yet. Please follow the instructions on `this page <http://debian.parisson.com/debian/>`_.
 
 Other Linux distributions
 --------------------------
 
-On other Linux platforms, you need to install all dependencies listed in the paragraph "Dependencies" (find all equivalent package names for your distribution).
+On other Linux platforms, you need to install all dependencies listed in Dependencies finding all equivalent package names for your distribution.
 
 Then, use pip::
 
- $ sudo pip install timeside
+ sudo pip install timeside
 
-OSX
----
+OSX / Windows
+--------------
 
-The installation on OSX platforms is pretty hard at the moment because all dependencies are not in brew. But, it will be fully documented in the next release 0.5.6.
+Native install is hard at the moment but you can either run our Vagrant or Docker images (see Development).
 
 Dependencies
 -------------
 
-Needed::
+Needed:
 
  python (>=2.7) python-setuptools python-numpy python-scipy python-h5py python-matplotlib python-imaging
- python-simplejson python-yaml python-mutagen libhdf5-serial-dev python-numexpr python-gst0.10
+ python-simplejson python-yaml python-mutagen libhdf5-serial-dev python-tables python-gst0.10
  gstreamer0.10-gnonlin gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly
 
-Optional::
+Optional:
 
  aubio (>=0.4.1) yaafe python-aubio python-yaafe vamp-examples
  django (>=1.4) django-south djangorestframework django-extensions
 
-
 User Interfaces
 ===============
+
+Python
+-------
+
+Of course all the TimeSide are available in our beloved python envionment.
+As IPython is really great for discovering objects with completion, writing notebooks, we strongly advise to install and use it::
+
+  sudo apt-get install ipython
+  ipython
+  >>> import timeside
+
 
 Shell
 ------
 
 Of course, TimeSide can be used in any python environment. But, a shell script is also provided to enable preset based and recursive processing through your command line interface::
 
- $ timeside-launch -h
+ timeside-launch -h
  Usage: scripts/timeside-launch [options] -c file.conf file1.wav [file2.wav ...]
   help: scripts/timeside-launch -h
 
@@ -338,6 +286,10 @@ Of course, TimeSide can be used in any python environment. But, a shell script i
                         list of graph output formats for the analyzers results
   -o <outputdir>, --ouput-directory=<outputdir>
                         output directory
+
+
+Find some preset examples in examples/presets/
+
 
 Web player
 -----------
@@ -373,32 +325,83 @@ An EXPERIMENTAL web server based on Django has been added to the package from ve
 
 A sandbox is provided in timeside/server/sandbox and you can initialize it and test it like this::
 
-  $ cd timeside/server/sandbox
-  $ ./manage.py syncdb
-  $ ./manage.py migrate
-  $ ./manage.py runserver
+  cd examples/sandbox
+  ./manage.py syncdb
+  ./manage.py migrate
+  ./manage.py runserver
 
 and browse http://localhost:8000/api/
 
 At the moment, this server is NOT connected to the player using TimeSide alone. Please use Telemeta.
 
-
 Development
 ===========
 
-For versions >=0.5 on Debian 7 Wheezy::
+First, install TimeSide (see Install).
 
- $ echo "deb http://ftp.debian.org/debian/ wheezy-backports main" | sudo tee -a /etc/apt/sources.list
- $ echo "deb-src http://debian.parisson.com/debian/ stable main" | sudo tee -a /etc/apt/sources.list
- $ sudo apt-get update
- $ sudo apt-get install git
- $ sudo apt-get build-dep python-timeside
+Then::
 
- $ git clone https://github.com/yomguy/TimeSide.git
- $ cd TimeSide
- $ git checkout dev
- $ sudo pip install -e .
- $ python tests/run_all_tests
+ sudo apt-get build-dep python-timeside
+ sudo apt-get install git
+ git clone https://github.com/yomguy/TimeSide.git
+ cd TimeSide
+ git checkout dev
+ sudo pip install -e .
+ echo "export PYTHONPATH=$PYTHONPATH:`pwd`" >> ~/.bashrc
+ source ~/.bashrc
+ tests/run_all_tests
+
+VirtualBox and Vagrant
+-----------------------
+
+We also provide a vagrant box to install a virtual Debian system including TimeSide and all other dependencies.
+First, install Vagrant and VirtualVox::
+
+ sudo apt-get install vagrant virtualbox
+
+On other OS, we need to install the packages correponding to your system:
+
+ * Vagrant: https://www.vagrantup.com/downloads.html
+ * VirtualBox: https://www.virtualbox.org/wiki/Downloads
+
+Then setup our image box like this in a terminal::
+
+ vagrant box add parisson/timeside-wheezy64 http://files.parisson.com/vagrant/timeside/parisson-timeside-wheezy64.box
+ vagrant init parisson/timeside-wheezy64
+ vagrant up
+ vagrant ssh
+
+To stop the virtual box::
+
+ exit
+ vagrant halt
+
+
+Docker
+-------
+
+Docker is a great tool for developping and deploying processing environments! Our docker container includes all the necessary packages and environments for development and production with TimeSide.
+
+First, install Docker: https://docs.docker.com/installation/
+
+Then, simply pull our dev image and run::
+
+  sudo docker pull yomguy/timeside
+  sudo docker run -i -t yomguy/timeside bash
+
+More infos: https://registry.hub.docker.com/u/yomguy/timeside/
+
+To start the web server through the container::
+
+  sudo docker run -p 9000:80 yomguy/timeside supervisord -n
+
+Finally browse http://localhost:9000/api/
+
+To start a new development, it is advised to checkout the dev branch and build your own container::
+
+  cd TimeSide
+  git checkout dev
+  sudo docker build .
 
 Sponsors and Partners
 =====================
@@ -419,18 +422,16 @@ Related projects
     * `Sound archives <http://archives.crem-cnrs.fr/>`_ of the CNRS, CREM and the "Musée de l'Homme" in Paris, France.
     * The `DIADEMS project <http://www.irit.fr/recherches/SAMOVA/DIADEMS/en/welcome/>`_ sponsored by the ANR.
 
-
-
 Copyrights
 ==========
 
-* Copyright (c) 2006, 2014 Parisson SARL
+* Copyright (c) 2006, 2014 Parisson Sarl
 * Copyright (c) 2006, 2014 Guillaume Pellerin
 * Copyright (c) 2010, 2014 Paul Brossier
 * Copyright (c) 2013, 2014 Thomas Fillon
 * Copyright (c) 2013, 2014 Maxime Lecoz
 * Copyright (c) 2013, 2014 David Doukhan
-* Copyright (c) 2006, 2010 Samalyse SARL
+* Copyright (c) 2006, 2010 Olivier Guilyardi
 
 
 License
