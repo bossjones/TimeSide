@@ -3,32 +3,29 @@
 from unit_timeside import unittest, TestRunner
 from timeside.decoder.file import FileDecoder
 from timeside.core import get_processor
-from timeside import _WITH_AUBIO
+from timeside import _WITH_VAMP
 from timeside.tools.test_samples import samples
 
 
-@unittest.skipIf(not _WITH_AUBIO, 'Aubio library is not available')
-class TestAubioTemporal(unittest.TestCase):
+@unittest.skipIf(not _WITH_VAMP, 'vamp-simple-host library is not available')
+class TestVampsimpleHost(unittest.TestCase):
 
     def setUp(self):
-        self.analyzer = get_processor('aubio_temporal')()
+        self.analyzer = get_processor('vamp_simple_host')()
 
-    def testOnSweep(self):
-        "runs on sweep"
-        self.source = samples["sweep.wav"]
-
-    def testOnC4Scale(self):
-        "runs on C4 scale"
+    def testOnC4_scale(self):
+        "runs on C4_scale"
         self.source = samples["C4_scale.wav"]
 
     def tearDown(self):
         decoder = FileDecoder(self.source)
         (decoder | self.analyzer).run()
         results = self.analyzer.results
+        print results.keys()
         #print results
-        results.to_yaml()
-        results.to_json()
-        results.to_xml()
+        #print results.to_yaml()
+        #print results.to_json()
+        #print results.to_xml()
 
 if __name__ == '__main__':
     unittest.main(testRunner=TestRunner())

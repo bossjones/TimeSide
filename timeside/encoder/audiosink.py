@@ -24,20 +24,34 @@ from timeside.core import implements, interfacedoc
 from timeside.encoder.core import GstEncoder
 from timeside.api import IEncoder
 
+#  TODO:
+# check if a soundcard device is available
+# alsasink = gst.element_factory_make("alsasink", "alsasink")
+# alsasink.probe_get_values_name('device')
+# ['hw:0,0', 'hw:0,3', 'hw:0,7', 'hw:0,8']
+
+
 
 class AudioSink(GstEncoder):
 
-    """gstreamer-based Audio Sink
+    """Gstreamer-based Audio Sink
 
     This encoder plays the decoded audio stream to the sound card
 
+    Parameters
+    ----------
+    output_sink : str, optional
+        Gstreamer sink element
+        Default to 'autoaudiosink'
+        Possible values : 'autoaudiosink', 'alsasink', 'osssink'
 
     >>> import timeside
-    >>> from timeside.tools.data_samples import samples as ts_samples
-    >>> wav_file = ts_samples['C4_scale.wav']
-    >>> d = timeside.decoder.file.FileDecoder(wav_file)
-    >>> e = timeside.encoder.audiosink.AudioSink()
-    >>> (d|e).run() # doctest: +SKIP
+    >>> from timeside.core import get_processor
+    >>> from timeside.tools.test_samples import samples
+    >>> wav_file = samples['sine440Hz_mono_1s.wav']
+    >>> d = get_processor('file_decoder')(wav_file)
+    >>> e = get_processor('live_encoder')()
+    >>> (d|e).run()  # doctest: +SKIP
     """
 
     implements(IEncoder)
@@ -70,12 +84,7 @@ class AudioSink(GstEncoder):
     @staticmethod
     @interfacedoc
     def id():
-        return "gst_audio_sink_enc"
-
-    @staticmethod
-    @interfacedoc
-    def description():
-        return "GStreamer based audio sink encoder"
+        return "live_encoder"
 
     @staticmethod
     @interfacedoc
