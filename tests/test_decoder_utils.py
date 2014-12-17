@@ -6,7 +6,7 @@ from __future__ import division
 
 from unit_timeside import unittest, TestRunner
 from timeside.decoder.utils import get_uri, get_media_uri_info, path2uri
-from timeside.tools.data_samples import samples as ts_samples
+from timeside.tools.test_samples import samples
 import os.path
 
 
@@ -14,8 +14,7 @@ class TestGetUri(unittest.TestCase):
     "Test get_uri function"
     def testFileName(self):
         "Retrieve the uri from a filename"
-        self.source = os.path.join(os.path.dirname(__file__),
-                                   "samples/sweep.wav")
+        self.source = samples["sweep.wav"]
 
         self.uri = path2uri(os.path.abspath(self.source))
 
@@ -32,15 +31,15 @@ class TestGetUriWrongUri(unittest.TestCase):
     def testMissingFile(self):
         "Missing file raise IOerror"
         self.source = os.path.join(os.path.dirname(__file__),
-                                   "a_missing_file_blahblah.wav")
+                                   "a_missing_file.wav")
 
     def testNotValidUri(self):
         "Not valid uri raise IOerror"
-        self.source = os.path.join("://not/a/valid/uri/parisson.com")
+        self.source = "://not/a/valid/uri/parisson.com"
 
     def testNotSupportedUriProtocol(self):
         "Not supported uri protocol raise IOerror"
-        self.source = os.path.join("mailto://john.doe@parisson.com")
+        self.source = "mailto://john.doe@parisson.com"
 
     def tearDown(self):
         self.assertRaises(IOError, get_uri, self.source)
@@ -59,33 +58,33 @@ class TestGetMediaInfo(unittest.TestCase):
 
     def testWav(self):
         "Test wav decoding"
-        self.source = ts_samples["sweep.wav"]
+        self.source = samples["sweep.wav"]
 
     def testWavMono(self):
         "Test mono wav decoding"
-        self.source = ts_samples["sweep_mono.wav"]
+        self.source = samples["sweep_mono.wav"]
 
         self.expected_channels = 1
 
     def testWav32k(self):
         "Test 32kHz wav decoding"
-        self.source = ts_samples["sweep_32000.wav"]
+        self.source = samples["sweep_32000.wav"]
         self.expected_samplerate = 32000
 
     def testFlac(self):
         "Test flac decoding"
-        self.source = ts_samples["sweep.flac"]
+        self.source = samples["sweep.flac"]
         self.expected_depth = 24
 
     def testOgg(self):
         "Test ogg decoding"
-        self.source = ts_samples["sweep.ogg"]
+        self.source = samples["sweep.ogg"]
         self.test_exact_duration = False
         self.expected_depth = 0  # ?
 
     def testMp3(self):
         "Test mp3 decoding"
-        self.source = ts_samples["sweep.mp3"]
+        self.source = samples["sweep.mp3"]
         self.expected_depth = 32
         self.test_exact_duration = False
 

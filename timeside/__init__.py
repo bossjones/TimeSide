@@ -25,7 +25,7 @@ from __future__ import absolute_import
 from . import api
 from . import core
 
-__version__ = '0.5.7'
+__version__ = '0.6.2'
 
 
 # Check Availability of external Audio feature extraction librairies
@@ -35,7 +35,7 @@ _WITH_YAAFE = ts_package.check_yaafe()
 _WITH_VAMP = ts_package.check_vamp()
 
 
-_packages_with_processors = ['decoder', 'analyzer', 'encoder', 'grapher']
+_packages_with_processors = ['decoder', 'analyzer', 'encoder', 'grapher', 'fx']
 
 __all__ = ['api', 'core']
 __all__.extend(_packages_with_processors)
