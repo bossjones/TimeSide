@@ -29,7 +29,13 @@ def discover_modules(subpackage, package=None):
     import pkgutil
 
     if package:
-        _pkg = import_module('.' + subpackage, package)
+        try:
+            _pkg = import_module('.' + subpackage, package)
+        except ImportError as e:
+            if subpackage == "extensions":
+                return
+            else:
+                raise e
     else:
         _pkg = import_module(subpackage)
 
