@@ -40,7 +40,6 @@ KEYWORDS = 'audio analysis features extraction MIR transcoding graph visualize p
 
 setup(
     name='TimeSide',
-    namespace_packages = ['timeside.extensions'],
     url='https://github.com/yomguy/TimeSide/',
     description="open web audio processing framework",
     long_description=open('README.rst').read(),
